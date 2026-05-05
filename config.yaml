@@ -1,0 +1,88 @@
+# =============================================================
+# REMES Configuration File
+# Relatedness-based Multi-Entity Summarization (IJCAI 2017)
+# =============================================================
+
+# ----- GRASP Algorithm Parameters -----
+# (memory-based GRASP as described in Section 4 of the paper)
+grasp:
+  tau: 1          # Weight for greedy component in candidate scoring
+  phi: 0.5        # Weight for randomized component in candidate scoring
+  sigma: 5        # Number of construction iterations
+  lambda: 5       # Number of local search improvement iterations
+
+# ----- Profit Matrix Weights -----
+# Controls the trade-off between importance, diversity, and relatedness
+# (Equation 6 in the paper)
+profit:
+  alpha: 2        # Intra-entity importance weight (diagonal, same entity)
+  beta: 1         # Intra-entity diversity penalty (off-diagonal, same entity)
+  gamma: 0.45     # Inter-entity relatedness weight (cross-entity feature pairs)
+
+# ----- Summary Length Constraints -----
+summary:
+  knapsack_size: 5   # k: max number of facts per entity summary
+
+# ----- Restricted Candidate List (RCL) -----
+# Threshold for filtering candidates in GRASP construction phase
+# (Section 4, "Improving feature diversity in entities")
+eta: 0.45
+
+# ----- Knowledge Graph Settings -----
+kg:
+  endpoint: "https://dbpedia.org/sparql"
+  dataset_version: "2016-04"           # DBpedia version used in experiments
+  request_timeout: 30                  # SPARQL query timeout in seconds
+  max_facts_per_entity: 100            # Max facts to retrieve per entity
+
+# ----- Relatedness Measures -----
+relatedness:
+  # Semantic relatedness via WordNet (Jaccard similarity on hypernym sets)
+  semantic:
+    enabled: true
+    lexical_db: "wordnet"              # Use WordNet Princeton v3.1
+    similarity_method: "jaccard"       # Jaccard coefficient on hypernym sets
+
+  # Graph-based relatedness via RDF2Vec (cosine similarity on entity vectors)
+  graph:
+    enabled: true
+    model_type: "word2vec"             # RDF2Vec uses word2vec-style embeddings
+    vector_size: 200                   # Dimensionality of entity embeddings
+    similarity_method: "cosine"        # Cosine similarity between entity vectors
+
+  # Final relatedness is average of semantic and graph-based
+  combination: "average"               # r(fi,fj) = (SemRel + GraphRel) / 2
+
+# ----- Paths -----
+paths:
+  rdf2vec_model: "models/rdf2vec_dbpedia/"    # Pre-trained RDF2Vec model
+  data_dir: "data/"                            # Benchmark datasets directory
+  results_dir: "results/"                      # Output directory
+  log_dir: "logs/"
+
+# ----- Datasets -----
+datasets:
+  wikinews:
+    path: "data/wikinews/"
+    num_documents: 20
+  aquaint:
+    path: "data/aquaint/"
+    num_documents: 10
+
+# ----- Evaluation -----
+evaluation:
+  qualitative:
+    num_questions: 5
+    likert_scale: 5
+    min_judges_per_question: 5
+  quantitative:
+    metrics: ["uci", "umass"]
+    uci_window_size: 10        # Sliding window for PMI computation
+    umass_smoothing: 1         # Laplace smoothing factor epsilon
+    palmetto_endpoint: "http://palmetto.aksw.org/palmetto-webapp/service/"
+
+# ----- Logging -----
+logging:
+  level: "INFO"                # DEBUG, INFO, WARNING, ERROR
+  save_to_file: true
+  log_file: "logs/remes.log"
