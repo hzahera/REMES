@@ -1,0 +1,22 @@
+# Core scientific computing
+numpy>=1.18.0
+scipy>=1.4.0
+
+# NLP and semantic similarity
+nltk>=3.5
+gensim>=3.8.0
+
+# Knowledge graph and SPARQL
+SPARQLWrapper>=1.8.5
+rdflib>=5.0.0
+
+# Configuration
+pyyaml>=5.3
+
+# Utilities
+tqdm>=4.45.0
+argparse
+
+# Optional: Jupyter for experimentation
+# jupyter>=1.0.0
+# matplotlib>=3.2.0
